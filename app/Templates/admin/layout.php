@@ -8,16 +8,13 @@ $title = $title ?? 'Admin';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e($title) ?> — Motorleaks Admin</title>
-    <link rel="stylesheet" href="<?= asset('app.css') ?>">
-    <style>
-    .admin-layout { display: flex; min-height: 100vh; }
-    .admin-sidebar { width: 220px; background: #1a1a1a; color: #fff; padding: 1.5rem; }
-    .admin-sidebar a { color: #ccc; text-decoration: none; display: block; padding: 0.5rem 0; }
-    .admin-sidebar a:hover { color: #fff; }
-    .admin-main { flex: 1; padding: 1.5rem; }
-    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #e5e5e5; padding-bottom: 1rem; }
-    .admin-header h1 { margin: 0; font-size: 1.25rem; }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= asset('css/tokens.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/components.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/admin.css') ?>">
 </head>
 <body>
     <?php if (\App\Support\Auth::check()): ?>
@@ -38,8 +35,11 @@ $title = $title ?? 'Admin';
                 <a href="<?= url('/admin/omdirigeringer') ?>">301-omdirigeringer</a>
                 <a href="<?= url('/admin/audit') ?>">Audit-logg</a>
                 <a href="<?= url('/admin/cache') ?>">Cache</a>
+                <?php if (\App\Support\Env::string('APP_ENV', 'production') === 'local'): ?>
+                <a href="<?= url('/admin/ui') ?>">UI-komponenter</a>
+                <?php endif; ?>
                 <a href="<?= url('/admin/passord') ?>">Bytt passord</a>
-                <form method="post" action="<?= url('/admin/logout') ?>" style="display:inline;"><?= csrf_field() ?><button type="submit" class="btn btn--ghost" style="color:#ccc;border:none;background:none;cursor:pointer;">Logg ut</button></form>
+                <form method="post" action="<?= url('/admin/logout') ?>"><?= csrf_field() ?><button type="submit" class="btn btn--ghost">Logg ut</button></form>
             </nav>
         </aside>
         <main class="admin-main">

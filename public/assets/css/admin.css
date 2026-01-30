@@ -1,0 +1,118 @@
+/**
+ * Motorleaks Admin — layout og sider (bruker tokens + base + components)
+ */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.admin-sidebar {
+  width: var(--sidebar-width);
+  background: var(--color-footer-bg);
+  color: var(--color-footer-text);
+  padding: var(--space-5);
+  flex-shrink: 0;
+}
+
+.admin-sidebar > p {
+  margin: 0 0 var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-surface);
+}
+
+.admin-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.admin-sidebar nav a {
+  color: var(--color-footer-text);
+  text-decoration: none;
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-sm);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.admin-sidebar nav a:hover {
+  color: var(--color-surface);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-sidebar nav form {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar .btn--ghost {
+  color: var(--color-footer-text);
+  border: none;
+  background: none;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-sm);
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.admin-sidebar .btn--ghost:hover {
+  color: var(--color-surface);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-main {
+  flex: 1;
+  padding: var(--space-5);
+  min-width: 0;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-text);
+}
+
+/* Admin cards (KPI / dashboard) */
+.admin-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.admin-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-card__value {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
+
+.admin-card__label {
+  font-size: var(--fs-sm);
+  color: var(--color-muted);
+  margin-top: var(--space-1);
+}
+
+/* Admin tables bruker .table fra components/tables.css */
+/* Admin forms bruker .input, .form-group fra components/inputs.css */

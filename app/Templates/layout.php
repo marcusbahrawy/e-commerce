@@ -33,6 +33,9 @@ unset($root);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= asset('css/tokens.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/components.css') ?>">
     <link rel="stylesheet" href="<?= asset('app.css') ?>">
     <script>window.APP_BASE = <?= json_encode(rtrim(parse_url(url('/'), PHP_URL_PATH) ?: '', '/')) ?>;</script>
 </head>

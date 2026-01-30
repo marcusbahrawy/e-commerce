@@ -24,6 +24,35 @@ Legg til `FTP_SERVER` og `FTP_USERNAME` hvis du kun har lagt inn `FTP_PASSWORD` 
 
 Deretter kan du kjøre seed manuelt (admin/kunde-brukere osv.) eller legge inn brukere direkte i phpMyAdmin.
 
+**Hvis databasen ble satt opp før tabellene `redirects` og `audit_logs` ble lagt til:** Kjør i phpMyAdmin (velg databasen → SQL) bare disse to blokkene, eller kjør hele `database/schema_motorleaks.sql` på nytt (CREATE TABLE IF NOT EXISTS gjør at eksisterende tabeller beholdes):
+
+```sql
+CREATE TABLE IF NOT EXISTS redirects (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    old_path VARCHAR(500) NOT NULL,
+    new_path VARCHAR(1000) NOT NULL,
+    status_code SMALLINT UNSIGNED NOT NULL DEFAULT 301,
+    hits INT UNSIGNED NOT NULL DEFAULT 0,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    UNIQUE KEY uq_redirects_old_path (old_path(255)),
+    KEY idx_redirects_old_path (old_path(100))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NULL,
+    action VARCHAR(50) NOT NULL,
+    entity_type VARCHAR(50) NOT NULL,
+    entity_id VARCHAR(100) NULL,
+    details TEXT NULL,
+    ip VARCHAR(45) NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    KEY idx_audit_logs_user (user_id),
+    KEY idx_audit_logs_entity (entity_type, entity_id),
+    KEY idx_audit_logs_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
 ---
 
 ## 3. .env på serveren (etter første FTP-deploy) – viktig

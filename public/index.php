@@ -140,6 +140,19 @@ $router->get('/admin/cache', fn (Request $req, array $p) => $adminCacheControlle
 $router->post('/admin/cache/purge', fn (Request $req, array $p) => $adminCacheController->purge($req, $p), 'admin.cache.purge');
 $adminDashboardController = new DashboardController($orderRepo);
 $router->get('/admin', fn (Request $req, array $p) => $adminDashboardController->index($req, $p), 'admin.dashboard');
+/* Kitchen sink: kun i dev (APP_ENV=local) */
+if (\App\Support\Env::string('APP_ENV', 'production') === 'local') {
+    $router->get('/admin/ui', function (Request $req, array $p) use ($root) {
+        $base = $root . '/app/Templates';
+        ob_start();
+        require $base . '/admin/ui-kitchen-sink.php';
+        $content = (string) ob_get_clean();
+        $title = 'UI-komponenter';
+        ob_start();
+        require $base . '/admin/layout.php';
+        return Response::html((string) ob_get_clean());
+    }, 'admin.ui');
+}
 $brandRepo = new \App\Repositories\BrandRepository();
 $adminProductsController = new ProductsController($productRepo, $categoryRepo, $brandRepo, $auditLogRepo);
 $router->get('/admin/produkter', fn (Request $req, array $p) => $adminProductsController->index($req, $p), 'admin.products');

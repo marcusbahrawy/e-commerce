@@ -8,6 +8,7 @@ use App\Http\Request;
 use App\Http\Response;
 use App\Repositories\RedirectRepository;
 use App\Support\Env;
+use PDOException;
 
 class RedirectMiddleware
 {
@@ -17,8 +18,12 @@ class RedirectMiddleware
 
     public function __invoke(Request $request, callable $next): Response
     {
-        $path = $request->path();
-        $redirect = $this->redirectRepo->findByOldPath($path);
+        try {
+            $path = $request->path();
+            $redirect = $this->redirectRepo->findByOldPath($path);
+        } catch (PDOException) {
+            return $next($request);
+        }
         if ($redirect !== null) {
             $this->redirectRepo->incrementHits((int) $redirect['id']);
             $newPath = $redirect['new_path'];
