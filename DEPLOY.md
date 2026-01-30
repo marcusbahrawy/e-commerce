@@ -57,12 +57,16 @@ MAIL_FROM=noreply@motorleaks.illeris-web.no
 
 ---
 
-## 4. Document root (web root)
+## 4. Document root (web root) og 403 Forbidden
 
-Filer deployes til **`/public_html`** på serveren. Appen må kjøres med **document root** satt til **`public_html/public`** (der `index.php` ligger).
+Filer deployes til **`/public_html`** på serveren.
 
-- I hosting-panelet (cPanel / Illeris): sett document root for **motorleaks.illeris-web.no** til **`public_html/public`**.
-- Da blir URL-strukturen: `/public_html/app/`, `/public_html/public/index.php`, `/public_html/vendor/` osv., og webserveren serverer kun fra `public_html/public/`.
+**Hvis du får «Forbidden» (403):**
+
+- **Variant A (anbefalt):** Sett document root for domenet til **`public_html/public`** i hosting-panelet. Da brukes `public/index.php` og `public/.htaccess` direkte.
+- **Variant B:** La document root være **`public_html`**. Da brukes **`index.php`** og **`.htaccess`** i roten av deploy (repo). De sender alle forespørsler til appen. Sørg for at disse filene er lastet opp (de ligger i repo og inkluderes i deploy).
+
+Begge varianter fungerer. Variant A er ryddigst.
 
 ---
 

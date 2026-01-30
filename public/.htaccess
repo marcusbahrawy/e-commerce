@@ -1,0 +1,18 @@
+# Motorleaks.no – Apache i public/ (document root)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Ikke omskriv reelle filer eller mapper (CSS, JS, bilder)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Send alt annet til index.php
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Sikre at index.php brukes som standard
+DirectoryIndex index.php
+
+# Hindre listing av mapper
+Options -Indexes
