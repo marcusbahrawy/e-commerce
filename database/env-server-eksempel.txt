@@ -1,0 +1,22 @@
+# Kopier dette til .env på serveren (i public_html/, samme nivå som app/ og public/)
+# Last opp via FTP eller opprett i filmanager i hosting-panelet.
+# Filen MÅ hete .env (med punktum foran).
+
+APP_ENV=production
+APP_DEBUG=0
+APP_URL=https://motorleaks.illeris-web.no
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=motorlaaksilleri_illeris
+DB_USERNAME=motorlaaksilleri_illeris
+DB_PASSWORD=din_db_passord_her
+DB_CHARSET=utf8mb4
+
+SESSION_LIFETIME=120
+
+STRIPE_KEY=
+STRIPE_SECRET=
+STRIPE_WEBHOOK_SECRET=
+
+MAIL_FROM=noreply@motorleaks.illeris-web.no

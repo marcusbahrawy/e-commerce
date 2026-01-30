@@ -26,11 +26,15 @@ Deretter kan du kjøre seed manuelt (admin/kunde-brukere osv.) eller legge inn b
 
 ---
 
-## 3. .env på serveren (etter første FTP-deploy)
+## 3. .env på serveren (etter første FTP-deploy) – viktig
 
-FTP-deploy laster **ikke** opp `.env` (den er ekskludert). Du må opprette `.env` manuelt på serveren, f.eks. via FTP eller filmanager i hosting-panelet.
+FTP-deploy laster **ikke** opp `.env` (den er ekskludert). Uten `.env` bruker appen standardverdier (f.eks. bruker `root` uten passord) og du får **«Access denied»** eller **PDOException**.
 
-Minimal innhold (tilpass passord/host om nødvendig):
+**Gjør dette:**
+
+1. På serveren: gå til mappen **`public_html`** (samme mappe som `app/`, `public/`, `vendor/`).
+2. Opprett en fil som heter **`.env`** (med punktum foran). Bruk FTP eller filmanager i hosting-panelet.
+3. Sett inn innhold som under. **Bytt ut `DB_PASSWORD`** med det faktiske database-passordet.
 
 ```env
 APP_ENV=production
@@ -41,7 +45,7 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_DATABASE=motorlaaksilleri_illeris
 DB_USERNAME=motorlaaksilleri_illeris
-DB_PASSWORD=<ditt-db-passord>
+DB_PASSWORD=ditt_ekte_db_passord_her
 DB_CHARSET=utf8mb4
 
 SESSION_LIFETIME=120
@@ -53,7 +57,7 @@ STRIPE_WEBHOOK_SECRET=
 MAIL_FROM=noreply@motorleaks.illeris-web.no
 ```
 
-**Viktig:** Endre `DB_PASSWORD` hvis du bruker et annet passord, og fyll inn Stripe-nøkler når betaling skal brukes.
+**Sjekk:** Filen skal ligge som `public_html/.env` (ikke inne i `public/`). Etter at `.env` er på plass, last inn siden på nytt.
 
 ---
 
