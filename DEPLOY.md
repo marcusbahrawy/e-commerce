@@ -48,6 +48,9 @@ DB_USERNAME=motorlaaksilleri_illeris
 DB_PASSWORD=ditt_ekte_db_passord_her
 DB_CHARSET=utf8mb4
 
+# Nødvendig når document root er public_html (rot): CSS og JS må lastes fra /public/assets/
+ASSET_BASE_PATH=/public
+
 SESSION_LIFETIME=120
 
 STRIPE_KEY=

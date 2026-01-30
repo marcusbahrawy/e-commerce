@@ -29,7 +29,9 @@ if (!function_exists('url')) {
 if (!function_exists('asset')) {
     function asset(string $path): string
     {
-        return url('/assets/' . ltrim($path, '/'));
+        $base = rtrim(\App\Support\Env::string('ASSET_BASE_PATH', ''), '/');
+        $assetsPath = $base === '' ? '/assets/' : $base . '/assets/';
+        return url($assetsPath . ltrim($path, '/'));
     }
 }
 

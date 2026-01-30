@@ -5,6 +5,8 @@
 APP_ENV=production
 APP_DEBUG=0
 APP_URL=https://motorleaks.illeris-web.no
+# Når document root er public_html (ikke public_html/public): slik at CSS/JS lastes fra /public/assets/
+ASSET_BASE_PATH=/public
 
 DB_HOST=localhost
 DB_PORT=3306
