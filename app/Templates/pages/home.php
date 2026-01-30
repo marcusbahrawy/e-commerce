@@ -2,6 +2,10 @@
     <div class="container">
         <h1 class="hero__title">Delebestilling på nett</h1>
         <p class="hero__lead">Scooter, moped, lett MC, ATV, hage, dekk og utstyr.</p>
+        <div class="hero__cta">
+            <a href="<?= url('/kategori') ?>" class="btn btn--primary">Se katalog</a>
+            <a href="<?= url('/sok') ?>" class="btn btn--ghost">Søk etter deler</a>
+        </div>
     </div>
 </section>
 <?php if (!empty($categories)): ?>
@@ -28,9 +32,12 @@
     </div>
 </section>
 <?php endif; ?>
-<section class="section">
+<section class="section section--welcome">
     <div class="container">
         <h2 class="section__title">Velkommen til Motorleaks</h2>
-        <p>Nettbutikken tilbyr rask levering og enkel bestilling av deler til scooter, moped, lett MC, ATV og mer.</p>
+        <p class="section__intro">Nettbutikken tilbyr rask levering og enkel bestilling av deler til scooter, moped, lett MC, ATV og mer.</p>
+        <div class="welcome-card">
+            <p>Finn deler til din sykkel eller maskin, bestill enkelt og få rask levering. Har du spørsmål? Ta gjerne kontakt via butikken.</p>
+        </div>
     </div>
 </section>

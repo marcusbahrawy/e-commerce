@@ -18,6 +18,9 @@ $footer2Items = $footer2Menu ? $menuRepo->getItems((int) $footer2Menu['id']) : [
     <?php if ($meta_description !== ''): ?>
     <meta name="description" content="<?= e($meta_description) ?>">
     <?php endif; ?>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('app.css') ?>">
 </head>
 <body>
