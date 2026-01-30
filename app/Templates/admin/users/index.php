@@ -1,36 +1,46 @@
 <?php $users = $users ?? []; ?>
-<p><a href="<?= url('/admin/brukere/ny') ?>" class="btn btn--primary">Ny adminbruker</a></p>
-<table class="admin-table" style="width:100%; border-collapse: collapse; margin-top: 1rem;">
-    <thead>
-        <tr>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">ID</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">E-post</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Navn</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Status</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Sist innlogget</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Handlinger</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($users as $u): ?>
-        <tr>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= (int) $u['id'] ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= e($u['email'] ?? '') ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= e($u['first_name'] ?? '') ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= (int)($u['is_active'] ?? 0) ? 'Aktiv' : 'Inaktiv' ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= !empty($u['last_login_at']) ? e($u['last_login_at']) : '—' ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;">
-                <a href="<?= url('/admin/brukere/' . (int)$u['id'] . '/rediger') ?>">Rediger</a>
-                |
-                <a href="<?= url('/admin/brukere/' . (int)$u['id'] . '/passord') ?>">Sett passord</a>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+<div class="admin-page-actions">
+    <a href="<?= url('/admin/brukere/ny') ?>" class="btn btn--primary">Ny adminbruker</a>
+</div>
 <?php if (isset($_GET['ok']) && $_GET['ok'] === 'passord'): ?>
-<p style="color:#080;">Passord er oppdatert.</p>
+<div class="alert alert--success" style="margin-bottom: var(--space-4);">Passord er oppdatert.</div>
 <?php endif; ?>
 <?php if (empty($users)): ?>
-<p>Ingen adminbrukere.</p>
+<p class="admin-empty">Ingen adminbrukere.</p>
+<?php else: ?>
+<div class="admin-table-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>E-post</th>
+                <th>Navn</th>
+                <th>Status</th>
+                <th>Sist innlogget</th>
+                <th class="table__actions">Handlinger</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($users as $u): ?>
+            <tr>
+                <td><?= (int) $u['id'] ?></td>
+                <td><?= e($u['email'] ?? '') ?></td>
+                <td><?= e($u['first_name'] ?? '') ?></td>
+                <td>
+                    <?php if ((int)($u['is_active'] ?? 0)): ?>
+                    <span class="badge badge--success">Aktiv</span>
+                    <?php else: ?>
+                    <span class="badge badge--neutral">Inaktiv</span>
+                    <?php endif; ?>
+                </td>
+                <td><?= !empty($u['last_login_at']) ? e($u['last_login_at']) : '—' ?></td>
+                <td class="table__actions">
+                    <a href="<?= url('/admin/brukere/' . (int)$u['id'] . '/rediger') ?>" class="btn btn--ghost btn--sm">Rediger</a>
+                    <a href="<?= url('/admin/brukere/' . (int)$u['id'] . '/passord') ?>" class="btn btn--ghost btn--sm">Sett passord</a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 <?php endif; ?>

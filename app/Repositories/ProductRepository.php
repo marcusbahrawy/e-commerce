@@ -119,6 +119,12 @@ final class ProductRepository
         return $row['path_webp'] ?: $row['path_original'];
     }
 
+    public function countForAdmin(): int
+    {
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM products');
+        return (int) $stmt->fetchColumn();
+    }
+
     /** @return array<int, array> */
     public function listAllForAdmin(int $limit = 100, int $offset = 0): array
     {

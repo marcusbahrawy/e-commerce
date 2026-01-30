@@ -1,22 +1,22 @@
 <?php $error = $error ?? null; $success = $success ?? null; ?>
-<?php if ($error): ?><p style="color:#c00;"><?= e($error) ?></p><?php endif; ?>
-<?php if ($success): ?><p style="color:#080;"><?= e($success) ?></p><?php endif; ?>
-<form method="post" action="<?= url('/admin/passord') ?>">
+<?php if ($error): ?><div class="admin-error" style="margin-bottom: var(--space-4);"><?= e($error) ?></div><?php endif; ?>
+<?php if ($success): ?><div class="alert alert--success" style="margin-bottom: var(--space-4);"><?= e($success) ?></div><?php endif; ?>
+<form method="post" action="<?= url('/admin/passord') ?>" class="admin-form">
     <?= csrf_field() ?>
-    <p>
-        <label>Nåværende passord *</label>
-        <input type="password" name="current_password" required class="input" style="max-width:280px;" autocomplete="current-password">
-    </p>
-    <p>
-        <label>Nytt passord *</label>
-        <input type="password" name="new_password" required minlength="8" class="input" style="max-width:280px;" autocomplete="new-password">
-        <span style="font-size:0.875rem;color:#666;">Minst 8 tegn.</span>
-    </p>
-    <p>
-        <label>Bekreft nytt passord *</label>
-        <input type="password" name="new_password_confirm" required minlength="8" class="input" style="max-width:280px;" autocomplete="new-password">
-    </p>
-    <p>
+    <div class="form-group">
+        <label for="current-password" class="required">Nåværende passord</label>
+        <input type="password" id="current-password" name="current_password" required class="input" autocomplete="current-password">
+    </div>
+    <div class="form-group">
+        <label for="new-password" class="required">Nytt passord</label>
+        <input type="password" id="new-password" name="new_password" required minlength="8" class="input" autocomplete="new-password">
+        <span class="form-hint">Minst 8 tegn.</span>
+    </div>
+    <div class="form-group">
+        <label for="new-password-confirm" class="required">Bekreft nytt passord</label>
+        <input type="password" id="new-password-confirm" name="new_password_confirm" required minlength="8" class="input" autocomplete="new-password">
+    </div>
+    <div class="admin-form-actions">
         <button type="submit" class="btn btn--primary">Bytt passord</button>
-    </p>
+    </div>
 </form>

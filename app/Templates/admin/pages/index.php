@@ -1,30 +1,41 @@
 <?php $pages = $pages ?? []; ?>
-<p><a href="<?= url('/admin/sider/ny') ?>" class="btn btn--primary">Ny side</a></p>
-<table class="admin-table" style="width:100%; border-collapse: collapse; margin-top: 1rem;">
-    <thead>
-        <tr>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">ID</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Tittel</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Slug</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Status</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Handlinger</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($pages as $p): ?>
-        <tr>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= (int) $p['id'] ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= e($p['title'] ?? '') ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= e($p['slug'] ?? '') ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= (int)($p['is_active'] ?? 0) ? 'Aktiv' : 'Inaktiv' ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;">
-                <a href="<?= url('/admin/sider/' . (int)$p['id'] . '/rediger') ?>">Rediger</a>
-                <form method="post" action="<?= url('/admin/sider/' . (int)$p['id'] . '/slett') ?>" style="display:inline;"><?= csrf_field() ?><button type="submit" style="background:none;border:none;color:#c00;cursor:pointer;padding:0;">Slett</button></form>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+<div class="admin-page-actions">
+    <a href="<?= url('/admin/sider/ny') ?>" class="btn btn--primary">Ny side</a>
+</div>
 <?php if (empty($pages)): ?>
-<p>Ingen sider ennå.</p>
+<p class="admin-empty">Ingen sider ennå.</p>
+<?php else: ?>
+<div class="admin-table-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tittel</th>
+                <th>Slug</th>
+                <th>Status</th>
+                <th class="table__actions">Handlinger</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($pages as $p): ?>
+            <tr>
+                <td><?= (int) $p['id'] ?></td>
+                <td><?= e($p['title'] ?? '') ?></td>
+                <td><?= e($p['slug'] ?? '') ?></td>
+                <td>
+                    <?php if ((int)($p['is_active'] ?? 0)): ?>
+                    <span class="badge badge--success">Aktiv</span>
+                    <?php else: ?>
+                    <span class="badge badge--neutral">Inaktiv</span>
+                    <?php endif; ?>
+                </td>
+                <td class="table__actions">
+                    <a href="<?= url('/admin/sider/' . (int)$p['id'] . '/rediger') ?>" class="btn btn--ghost btn--sm">Rediger</a>
+                    <form method="post" action="<?= url('/admin/sider/' . (int)$p['id'] . '/slett') ?>"><?= csrf_field() ?><button type="submit" class="btn btn--danger btn--sm" onclick="return confirm('Slette denne siden?');">Slett</button></form>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 <?php endif; ?>

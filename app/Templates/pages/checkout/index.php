@@ -19,33 +19,33 @@ $error = $error ?? null;
             <div class="checkout-form__grid">
                 <div class="checkout-form__main">
                     <h2>Kontaktinformasjon</h2>
-                    <p>
-                        <label for="email">E-post *</label>
+                    <div class="form-group">
+                        <label for="email" class="required">E-post</label>
                         <input type="email" id="email" name="email" required value="<?= e($_POST['email'] ?? '') ?>" class="input">
-                    </p>
-                    <p>
+                    </div>
+                    <div class="form-group">
                         <label for="name">Navn</label>
                         <input type="text" id="name" name="name" value="<?= e($_POST['name'] ?? '') ?>" class="input">
-                    </p>
+                    </div>
                     <h2>Leveringsadresse</h2>
-                    <p>
+                    <div class="form-group">
                         <label for="address1">Adresse</label>
                         <input type="text" id="address1" name="address1" value="<?= e($_POST['address1'] ?? '') ?>" class="input">
-                    </p>
-                    <p class="checkout-form__row">
-                        <span>
+                    </div>
+                    <div class="checkout-form__row">
+                        <div class="form-group">
                             <label for="postal_code">Postnummer</label>
                             <input type="text" id="postal_code" name="postal_code" value="<?= e($_POST['postal_code'] ?? '') ?>" class="input" maxlength="10">
-                        </span>
-                        <span>
+                        </div>
+                        <div class="form-group">
                             <label for="city">Sted</label>
                             <input type="text" id="city" name="city" value="<?= e($_POST['city'] ?? '') ?>" class="input">
-                        </span>
-                    </p>
-                    <p>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="country">Land</label>
                         <input type="text" id="country" name="country" value="<?= e($_POST['country'] ?? 'NO') ?>" class="input" maxlength="2">
-                    </p>
+                    </div>
                     <?php if ($shipping_methods !== []): ?>
                     <h2>Frakt</h2>
                     <div class="checkout-shipping">
@@ -69,9 +69,9 @@ $error = $error ?? null;
                         <?php endforeach; ?>
                     </div>
                     <?php endif; ?>
-                    <p>
-                        <button type="submit" class="btn btn--primary">Fullfør bestilling</button>
-                    </p>
+                    <div class="form-group" style="margin-top: var(--space-5);">
+                        <button type="submit" class="btn btn--primary btn--lg">Fullfør bestilling</button>
+                    </div>
                 </div>
                 <aside class="checkout-form__summary">
                     <h2>Oppsummering</h2>

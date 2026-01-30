@@ -1,30 +1,35 @@
 <?php $redirects = $redirects ?? []; ?>
-<p><a href="<?= url('/admin/omdirigeringer/ny') ?>" class="btn btn--primary">Ny omdirigering</a></p>
-<p style="font-size:0.875rem; color:#666;">Legg til gamle URL-er her for 301-omdirigering til nye sider. Nyttig ved migrering fra gammel side.</p>
-<table class="admin-table" style="width:100%; border-collapse: collapse; margin-top: 1rem;">
-    <thead>
-        <tr>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Gammel sti</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Ny sti / URL</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Status</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Treff</th>
-            <th style="text-align:left; padding: 0.5rem; border-bottom: 1px solid #e5e5e5;">Handling</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($redirects as $r): ?>
-        <tr>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><code><?= e($r['old_path'] ?? '') ?></code></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><code><?= e($r['new_path'] ?? '') ?></code></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= (int) ($r['status_code'] ?? 301) ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;"><?= (int) ($r['hits'] ?? 0) ?></td>
-            <td style="padding: 0.5rem; border-bottom: 1px solid #eee;">
-                <form method="post" action="<?= url('/admin/omdirigeringer/' . (int)$r['id'] . '/slett') ?>" style="display:inline;"><?= csrf_field() ?><button type="submit" style="background:none;border:none;color:#c00;cursor:pointer;padding:0;" onclick="return confirm('Slette denne omdirigeringen?');">Slett</button></form>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
+<div class="admin-page-actions">
+    <a href="<?= url('/admin/omdirigeringer/ny') ?>" class="btn btn--primary">Ny omdirigering</a>
+</div>
+<p class="text-muted text-small" style="margin-bottom: var(--space-4);">Legg til gamle URL-er her for 301-omdirigering til nye sider. Nyttig ved migrering fra gammel side.</p>
 <?php if (empty($redirects)): ?>
-<p>Ingen omdirigeringer. <a href="<?= url('/admin/omdirigeringer/ny') ?>">Legg til</a> for å mappe gamle URL-er til nye.</p>
+<p class="admin-empty">Ingen omdirigeringer. <a href="<?= url('/admin/omdirigeringer/ny') ?>">Legg til</a> for å mappe gamle URL-er til nye.</p>
+<?php else: ?>
+<div class="admin-table-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Gammel sti</th>
+                <th>Ny sti / URL</th>
+                <th>Status</th>
+                <th>Treff</th>
+                <th class="table__actions">Handling</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($redirects as $r): ?>
+            <tr>
+                <td><code class="admin-code"><?= e($r['old_path'] ?? '') ?></code></td>
+                <td><code class="admin-code"><?= e($r['new_path'] ?? '') ?></code></td>
+                <td><?= (int) ($r['status_code'] ?? 301) ?></td>
+                <td><?= (int) ($r['hits'] ?? 0) ?></td>
+                <td class="table__actions">
+                    <form method="post" action="<?= url('/admin/omdirigeringer/' . (int)$r['id'] . '/slett') ?>"><?= csrf_field() ?><button type="submit" class="btn btn--danger btn--sm" onclick="return confirm('Slette denne omdirigeringen?');">Slett</button></form>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 <?php endif; ?>

@@ -17,7 +17,14 @@ $url = url('/produkt/' . ($product['slug'] ?? ''));
             <div class="product-card__image product-card__image--placeholder" aria-hidden="true"></div>
             <?php endif; ?>
         </div>
-        <h3 class="product-card__title"><?= e($product['title'] ?? '') ?></h3>
-        <p class="product-card__price"><?= $price > 0 ? e(\App\Support\Money::format($price)) : 'Pris på forespørsel' ?></p>
+        <div class="product-card__body">
+            <h3 class="product-card__title"><?= e($product['title'] ?? '') ?></h3>
+            <div class="product-card__price-wrap">
+                <span class="product-card__price price-tag"><?= $price > 0 ? e(\App\Support\Money::format($price)) : 'Pris på forespørsel' ?></span>
+            </div>
+        </div>
     </a>
+    <div class="product-card__cta">
+        <a href="<?= e($url) ?>" class="btn btn--primary btn--block btn--sm">Se produkt</a>
+    </div>
 </article>

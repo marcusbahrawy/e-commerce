@@ -138,7 +138,7 @@ $router->get('/admin/audit', fn (Request $req, array $p) => $adminAuditControlle
 $adminCacheController = new \App\Controllers\Admin\CacheController($root . '/storage');
 $router->get('/admin/cache', fn (Request $req, array $p) => $adminCacheController->index($req, $p), 'admin.cache');
 $router->post('/admin/cache/purge', fn (Request $req, array $p) => $adminCacheController->purge($req, $p), 'admin.cache.purge');
-$adminDashboardController = new DashboardController($orderRepo);
+$adminDashboardController = new DashboardController($orderRepo, $productRepo);
 $router->get('/admin', fn (Request $req, array $p) => $adminDashboardController->index($req, $p), 'admin.dashboard');
 /* Kitchen sink: kun i dev (APP_ENV=local) */
 if (\App\Support\Env::string('APP_ENV', 'production') === 'local') {

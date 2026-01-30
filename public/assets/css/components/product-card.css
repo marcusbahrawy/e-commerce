@@ -78,7 +78,8 @@
   text-decoration: line-through;
 }
 .product-card__cta {
-  margin-top: var(--space-3);
+  margin-top: 0;
+  padding: 0 var(--space-4) var(--space-4);
 }
 
 /* Price tag (standalone) */
@@ -133,7 +134,8 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
-.filter-chip.is-active {
+.filter-chip.is-active,
+.filter-chip--active {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: #fff;

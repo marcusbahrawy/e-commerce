@@ -1,23 +1,23 @@
 <?php
 $error = $error ?? null;
 ?>
-<div class="admin-login" style="max-width: 400px; margin: 4rem auto; padding: 2rem; border: 1px solid #e5e5e5; border-radius: 8px;">
-    <h1 style="margin: 0 0 1.5rem;">Admin — Logg inn</h1>
+<div class="admin-login admin-order-card" style="max-width: 400px; margin: var(--space-8) auto;">
+    <h1 class="h2" style="margin: 0 0 var(--space-5);">Admin — Logg inn</h1>
     <?php if ($error): ?>
-    <p style="color: #c00; margin: 0 0 1rem;"><?= e($error) ?></p>
+    <div class="admin-error" style="margin-bottom: var(--space-4);"><?= e($error) ?></div>
     <?php endif; ?>
-    <form method="post" action="<?= e(url('/admin/login')) ?>">
+    <form method="post" action="<?= e(url('/admin/login')) ?>" class="admin-form">
         <?= csrf_field() ?>
-        <p>
+        <div class="form-group">
             <label for="email">E-post</label>
-            <input type="email" id="email" name="email" required style="width: 100%; padding: 0.5rem; margin-top: 0.25rem;" class="input">
-        </p>
-        <p>
+            <input type="email" id="email" name="email" required class="input">
+        </div>
+        <div class="form-group">
             <label for="password">Passord</label>
-            <input type="password" id="password" name="password" required style="width: 100%; padding: 0.5rem; margin-top: 0.25rem;" class="input">
-        </p>
-        <p>
+            <input type="password" id="password" name="password" required class="input">
+        </div>
+        <div class="admin-form-actions">
             <button type="submit" class="btn btn--primary">Logg inn</button>
-        </p>
+        </div>
     </form>
 </div>
