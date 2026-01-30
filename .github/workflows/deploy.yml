@@ -1,0 +1,50 @@
+# Deploy Motorleaks.no til server via FTP
+# Kjører ved push til main (eller manuelt).
+#
+# GitHub Secrets som må være satt:
+#   FTP_SERVER   – f.eks. ftp.motorleaks.illeris-web.no
+#   FTP_USERNAME – f.eks. illeris@motorleaks.illeris-web.no
+#   FTP_PASSWORD – FTP-passordet
+
+name: Deploy til server (FTP)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install --no-dev --prefer-dist --optimize-autoloader
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ./
+          exclude: |
+            **/.git*
+            **/.github
+            **/.env
+            **/.env.*
+            **/tests
+            **/*.md
+            **/.gitignore
+            **/.editorconfig
+            **/phpunit.xml*
+            **/node_modules
