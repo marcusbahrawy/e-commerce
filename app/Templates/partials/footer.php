@@ -1,12 +1,22 @@
 <?php
 $footer1Items = $footer1Items ?? [];
 $footer2Items = $footer2Items ?? [];
+$contactEmail = $contactEmail ?? '';
+$contactPhone = $contactPhone ?? '';
+$footerText = $footerText ?? '';
 ?>
 <footer class="footer">
     <div class="container footer__inner">
         <div class="footer__col">
             <h3 class="footer__title">Kontakt</h3>
+            <?php if ($contactEmail !== '' || $contactPhone !== ''): ?>
+            <p><?= $contactEmail !== '' ? 'E-post: <a href="mailto:' . e($contactEmail) . '">' . e($contactEmail) . '</a>' : '' ?><?= $contactEmail !== '' && $contactPhone !== '' ? '. ' : '' ?><?= $contactPhone !== '' ? 'Telefon: ' . e($contactPhone) : '' ?></p>
+            <?php else: ?>
             <p>E-post og telefon via butikken.</p>
+            <?php endif; ?>
+            <?php if ($footerText !== ''): ?>
+            <p><?= e($footerText) ?></p>
+            <?php endif; ?>
         </div>
         <?php if (!empty($footer1Items)): ?>
         <div class="footer__col">
@@ -44,7 +54,7 @@ $footer2Items = $footer2Items ?? [];
         </div>
         <?php endif; ?>
         <div class="footer__bottom">
-            <p>&copy; <?= date('Y') ?> Motorleaks. Delebestilling på nett.</p>
+            <p>&copy; <?= date('Y') ?> <?= e($siteName ?? 'Motorleaks') ?>. Delebestilling på nett.</p>
         </div>
     </div>
 </footer>

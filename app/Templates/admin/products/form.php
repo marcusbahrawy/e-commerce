@@ -1,6 +1,7 @@
 <?php
 $product = $product ?? null;
 $categories = $categories ?? [];
+$brands = $brands ?? [];
 $images = $images ?? [];
 $error = $error ?? null;
 $isEdit = $product !== null;
@@ -28,6 +29,15 @@ $uploadError = $_GET['error'] ?? null;
     <p>
         <label>Pris (øre)</label>
         <input type="number" name="price_from_ore" value="<?= e($product['price_from_ore'] ?? $_POST['price_from_ore'] ?? '0') ?>" min="0" class="input" style="max-width:120px;">
+    </p>
+    <p>
+        <label>Merke</label>
+        <select name="brand_id" class="input" style="max-width:300px;">
+            <option value="">— Ingen —</option>
+            <?php foreach ($brands as $b): ?>
+            <option value="<?= (int)$b['id'] ?>" <?= (isset($product['brand_id']) && (int)$product['brand_id'] === (int)$b['id']) ? 'selected' : '' ?>><?= e($b['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
     </p>
     <p>
         <label>Kategori</label>

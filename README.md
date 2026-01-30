@@ -6,14 +6,16 @@
 
 ## Implementasjonsstatus (MVP)
 
-**Public:** Forside, katalog (kategorier, produktside), søk (`/sok`), CMS-sider (`/side/{slug}`), handlekurv, kasse med Stripe Checkout, sitemap.xml.  
+**Public:** Forside, katalog (kategorier, produktside), søk (`/sok`), typeahead-søk i header (API `/api/sok-forslag`), kategorimeny/megameny i header, CMS-sider (`/side/{slug}`), handlekurv, kasse med Stripe Checkout, sitemap.xml. Layout bruker innstillinger (sidenavn, kontakt) fra admin. **Filcache:** GET til /, /kategori/*, /produkt/*, /side/* caches i 15 min; purges ved admin-oppdatering av produkt/kategori/CMS.  
 **Konto:** Innlogging, registrering, glemt passord, tilbakestill passord, profilredigering, bytt passord, ordreliste og ordredetalj.  
-**Admin:** Innlogging, dashboard, produkter (CRUD + bildeopplasting), kategorier, CMS-sider, menyer, fraktmetoder, ordrer (liste + detalj + status/fulfillment).  
+**Admin:** Innlogging (med rate limiting: 5 forsøk/15 min per IP), dashboard, produkter (CRUD + bildeopplasting + merke), merker (CRUD), kategorier, CMS-sider, menyer, fraktmetoder, ordrer (liste + detalj + status/fulfillment), brukeradministrasjon (admin-brukere: liste, ny, rediger, sett passord), innstillinger (site_name, contact_email, osv.), 301-omdirigeringer (tabell + admin CRUD), audit-logg (admin-handlinger), cache (tøm sidecache manuelt), bytt eget passord.  
 **Betaling:** Stripe Checkout Session; webhook for `checkout.session.completed` (oppdaterer ordre til betalt, sender ordrebekreftelse på e-post).  
 **E-post:** Ordrebekreftelse ved betalt ordre (webhook); glemt passord (PHP `mail()`). Avsender: `MAIL_FROM` i `.env`.  
 **Feilsider:** Egne 404-mal (`app/Templates/errors/404.php`).
 
-**Ikke implementert (fra spec):** 2FA admin, rate limiting, APCu/filcache, REST API-lag, full audit logg, megameny, typeahead-søk, bildepipeline (WebP batch), 301-redirect-tabell, unit/integrasjonstester i CI.
+**Tester:** PHPUnit (Unit: Slug, Html). Kjør: `composer test` eller `./vendor/bin/phpunit`.
+
+**Ikke implementert (fra spec):** 2FA admin, APCu (applikasjonscache), REST API-lag (utvidet), bildepipeline (WebP batch), CI-kjøring av tester.
 
 ---
 

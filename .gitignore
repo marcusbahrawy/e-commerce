@@ -12,7 +12,10 @@
 !/storage/imports/.gitkeep
 /storage/mail/*
 !/storage/mail/.gitkeep
+/storage/rate_limit/*
 composer.lock
 .idea/
 .vscode/
 *.log
+.phpunit.cache/
+/build/

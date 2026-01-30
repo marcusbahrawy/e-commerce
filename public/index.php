@@ -46,7 +46,10 @@ $categoryRepo = new CategoryRepository();
 $productRepo = new ProductRepository();
 $cartRepo = new CartRepository();
 $cartService = new CartService($cartRepo, $productRepo);
+$redirectRepo = new \App\Repositories\RedirectRepository();
 $router->middleware(
+    new \App\Http\Middleware\RedirectMiddleware($redirectRepo),
+    new \App\Http\Middleware\PageCacheMiddleware($root . '/storage', 900),
     new SecurityHeadersMiddleware(),
     new SessionMiddleware(),
     new CsrfMiddleware(),
@@ -65,6 +68,21 @@ $router->get('/kategori/{slug}', fn (Request $req, array $p) => $catalogControll
 $router->get('/kategori/{parent}/{slug}', fn (Request $req, array $p) => $catalogController->category($req, $p), 'catalog.category.child');
 $router->get('/produkt/{slug}', fn (Request $req, array $p) => $catalogController->product($req, $p), 'catalog.product');
 $router->get('/sok', fn (Request $req, array $p) => $catalogController->search($req, $p), 'catalog.search');
+$router->get('/api/sok-forslag', function (Request $req, array $p) use ($catalogService) {
+    $q = trim($req->query('q', '') ?? '');
+    if (strlen($q) < 2) {
+        return \App\Http\Response::json(['items' => []]);
+    }
+    $result = $catalogService->searchProducts($q, 1, 8);
+    $items = [];
+    foreach ($result['items'] as $row) {
+        $items[] = [
+            'title' => $row['title'] ?? '',
+            'url' => url('/produkt/' . ($row['slug'] ?? '')),
+        ];
+    }
+    return \App\Http\Response::json(['items' => $items]);
+}, 'api.search.suggest');
 
 $pageRepo = new PageRepository();
 $cmsController = new CmsController($pageRepo);
@@ -89,13 +107,41 @@ $stripeWebhookController = new StripeWebhookController($paymentService, $orderRe
 $router->post('/webhooks/stripe', fn (Request $req, array $p) => $stripeWebhookController->handle($req, $p), 'webhooks.stripe');
 
 $userRepo = new UserRepository();
-$adminLoginController = new LoginController($userRepo);
+$rateLimiter = new \App\Support\RateLimiter($root . '/storage', 5, 900);
+$adminLoginController = new LoginController($userRepo, $rateLimiter);
 $router->get('/admin/login', fn (Request $req, array $p) => $adminLoginController->show($req, $p), 'admin.login');
 $router->post('/admin/login', fn (Request $req, array $p) => $adminLoginController->login($req, $p), 'admin.login.submit');
 $router->post('/admin/logout', fn (Request $req, array $p) => $adminLoginController->logout($req, $p), 'admin.logout');
+$adminProfileController = new \App\Controllers\Admin\ProfileController($userRepo);
+$router->get('/admin/passord', fn (Request $req, array $p) => $adminProfileController->passwordForm($req, $p), 'admin.password');
+$router->post('/admin/passord', fn (Request $req, array $p) => $adminProfileController->passwordUpdate($req, $p), 'admin.password.update');
+$auditLogRepo = new \App\Repositories\AuditLogRepository();
+$adminUsersController = new \App\Controllers\Admin\UsersController($userRepo, $auditLogRepo);
+$router->get('/admin/brukere', fn (Request $req, array $p) => $adminUsersController->index($req, $p), 'admin.users');
+$router->get('/admin/brukere/ny', fn (Request $req, array $p) => $adminUsersController->createForm($req, $p), 'admin.users.create');
+$router->post('/admin/brukere', fn (Request $req, array $p) => $adminUsersController->create($req, $p), 'admin.users.store');
+$router->get('/admin/brukere/{id}/rediger', fn (Request $req, array $p) => $adminUsersController->editForm($req, $p), 'admin.users.edit');
+$router->post('/admin/brukere/{id}', fn (Request $req, array $p) => $adminUsersController->update($req, $p), 'admin.users.update');
+$router->get('/admin/brukere/{id}/passord', fn (Request $req, array $p) => $adminUsersController->setPasswordForm($req, $p), 'admin.users.password');
+$router->post('/admin/brukere/{id}/passord', fn (Request $req, array $p) => $adminUsersController->setPassword($req, $p), 'admin.users.password.update');
+$settingsRepo = new \App\Repositories\SettingsRepository();
+$adminSettingsController = new \App\Controllers\Admin\SettingsController($settingsRepo);
+$router->get('/admin/innstillinger', fn (Request $req, array $p) => $adminSettingsController->index($req, $p), 'admin.settings');
+$router->post('/admin/innstillinger', fn (Request $req, array $p) => $adminSettingsController->update($req, $p), 'admin.settings.update');
+$adminRedirectsController = new \App\Controllers\Admin\RedirectsController($redirectRepo, $auditLogRepo);
+$router->get('/admin/omdirigeringer', fn (Request $req, array $p) => $adminRedirectsController->index($req, $p), 'admin.redirects');
+$router->get('/admin/omdirigeringer/ny', fn (Request $req, array $p) => $adminRedirectsController->createForm($req, $p), 'admin.redirects.create');
+$router->post('/admin/omdirigeringer', fn (Request $req, array $p) => $adminRedirectsController->create($req, $p), 'admin.redirects.store');
+$router->post('/admin/omdirigeringer/{id}/slett', fn (Request $req, array $p) => $adminRedirectsController->delete($req, $p), 'admin.redirects.delete');
+$adminAuditController = new \App\Controllers\Admin\AuditLogController($auditLogRepo, $userRepo);
+$router->get('/admin/audit', fn (Request $req, array $p) => $adminAuditController->index($req, $p), 'admin.audit');
+$adminCacheController = new \App\Controllers\Admin\CacheController($root . '/storage');
+$router->get('/admin/cache', fn (Request $req, array $p) => $adminCacheController->index($req, $p), 'admin.cache');
+$router->post('/admin/cache/purge', fn (Request $req, array $p) => $adminCacheController->purge($req, $p), 'admin.cache.purge');
 $adminDashboardController = new DashboardController($orderRepo);
 $router->get('/admin', fn (Request $req, array $p) => $adminDashboardController->index($req, $p), 'admin.dashboard');
-$adminProductsController = new ProductsController($productRepo, $categoryRepo);
+$brandRepo = new \App\Repositories\BrandRepository();
+$adminProductsController = new ProductsController($productRepo, $categoryRepo, $brandRepo, $auditLogRepo);
 $router->get('/admin/produkter', fn (Request $req, array $p) => $adminProductsController->index($req, $p), 'admin.products');
 $router->get('/admin/produkter/ny', fn (Request $req, array $p) => $adminProductsController->createForm($req, $p), 'admin.products.create');
 $router->post('/admin/produkter', fn (Request $req, array $p) => $adminProductsController->create($req, $p), 'admin.products.store');
@@ -105,13 +151,20 @@ $router->post('/admin/produkter/{id}/slett', fn (Request $req, array $p) => $adm
 $router->post('/admin/produkter/{id}/bilde', fn (Request $req, array $p) => $adminProductsController->uploadImage($req, $p), 'admin.products.uploadImage');
 $router->post('/admin/produkter/{id}/bilde/slett', fn (Request $req, array $p) => $adminProductsController->deleteImage($req, $p), 'admin.products.deleteImage');
 $router->post('/admin/produkter/{id}/bilde/primar', fn (Request $req, array $p) => $adminProductsController->setPrimaryImage($req, $p), 'admin.products.setPrimaryImage');
-$adminCategoriesController = new CategoriesController($categoryRepo);
+$adminCategoriesController = new CategoriesController($categoryRepo, $auditLogRepo);
 $router->get('/admin/kategorier', fn (Request $req, array $p) => $adminCategoriesController->index($req, $p), 'admin.categories');
 $router->get('/admin/kategorier/ny', fn (Request $req, array $p) => $adminCategoriesController->createForm($req, $p), 'admin.categories.create');
 $router->post('/admin/kategorier', fn (Request $req, array $p) => $adminCategoriesController->create($req, $p), 'admin.categories.store');
 $router->get('/admin/kategorier/{id}/rediger', fn (Request $req, array $p) => $adminCategoriesController->editForm($req, $p), 'admin.categories.edit');
 $router->post('/admin/kategorier/{id}', fn (Request $req, array $p) => $adminCategoriesController->update($req, $p), 'admin.categories.update');
 $router->post('/admin/kategorier/{id}/slett', fn (Request $req, array $p) => $adminCategoriesController->delete($req, $p), 'admin.categories.delete');
+$adminBrandsController = new \App\Controllers\Admin\BrandsController($brandRepo, $auditLogRepo);
+$router->get('/admin/merker', fn (Request $req, array $p) => $adminBrandsController->index($req, $p), 'admin.brands');
+$router->get('/admin/merker/ny', fn (Request $req, array $p) => $adminBrandsController->createForm($req, $p), 'admin.brands.create');
+$router->post('/admin/merker', fn (Request $req, array $p) => $adminBrandsController->create($req, $p), 'admin.brands.store');
+$router->get('/admin/merker/{id}/rediger', fn (Request $req, array $p) => $adminBrandsController->editForm($req, $p), 'admin.brands.edit');
+$router->post('/admin/merker/{id}', fn (Request $req, array $p) => $adminBrandsController->update($req, $p), 'admin.brands.update');
+$router->post('/admin/merker/{id}/slett', fn (Request $req, array $p) => $adminBrandsController->delete($req, $p), 'admin.brands.delete');
 $adminOrdersController = new OrdersController($orderRepo);
 $router->get('/admin/ordrer', fn (Request $req, array $p) => $adminOrdersController->index($req, $p), 'admin.orders');
 $router->get('/admin/ordrer/{id}', fn (Request $req, array $p) => $adminOrdersController->show($req, $p), 'admin.orders.show');

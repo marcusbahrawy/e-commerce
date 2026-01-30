@@ -114,4 +114,56 @@ final class UserRepository
     {
         $this->pdo->exec('DELETE FROM password_reset_tokens WHERE expires_at < NOW()');
     }
+
+    /** @return list<array{id:int, email:string, first_name:string|null, last_name:string|null, is_active:int, last_login_at:string|null}> */
+    public function listUsersWithRole(string $roleKey): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT u.id, u.email, u.first_name, u.last_name, u.is_active, u.last_login_at
+             FROM users u
+             INNER JOIN user_roles ur ON ur.user_id = u.id
+             INNER JOIN roles r ON r.id = ur.role_id AND r.`key` = ?
+             ORDER BY u.email"
+        );
+        $stmt->execute([$roleKey]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows ?: [];
+    }
+
+    public function getRoleIdByKey(string $roleKey): ?int
+    {
+        $stmt = $this->pdo->prepare('SELECT id FROM roles WHERE `key` = ? LIMIT 1');
+        $stmt->execute([$roleKey]);
+        $id = $stmt->fetchColumn();
+        return $id !== false ? (int) $id : null;
+    }
+
+    public function addUserRole(int $userId, string $roleKey): void
+    {
+        $roleId = $this->getRoleIdByKey($roleKey);
+        if ($roleId === null) {
+            return;
+        }
+        $stmt = $this->pdo->prepare('INSERT IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)');
+        $stmt->execute([$userId, $roleId]);
+    }
+
+    public function createAdminUser(array $data): int
+    {
+        $stmt = $this->pdo->prepare('INSERT INTO users (email, password_hash, first_name, last_name, is_active) VALUES (?, ?, ?, ?, 1)');
+        $stmt->execute([
+            $data['email'],
+            $data['password_hash'],
+            $data['first_name'] ?? null,
+            $data['last_name'] ?? null,
+        ]);
+        $userId = (int) $this->pdo->lastInsertId();
+        $this->addUserRole($userId, 'admin');
+        return $userId;
+    }
+
+    public function updateActive(int $userId, bool $isActive): void
+    {
+        $this->pdo->prepare('UPDATE users SET is_active = ? WHERE id = ?')->execute([$isActive ? 1 : 0, $userId]);
+    }
 }

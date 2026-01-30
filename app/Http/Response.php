@@ -22,6 +22,11 @@ class Response
         return $this->statusCode;
     }
 
+    public function body(): string
+    {
+        return $this->body;
+    }
+
     public function withHeader(string $name, string $value): self
     {
         $clone = clone $this;

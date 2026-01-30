@@ -6,6 +6,7 @@ namespace App\Controllers\Admin;
 
 use App\Http\Request;
 use App\Http\Response;
+use App\Http\Middleware\PageCacheMiddleware;
 use App\Repositories\PageRepository;
 use App\Support\Slug;
 
@@ -50,6 +51,7 @@ class PagesController
             'content_html' => trim($request->input('content_html', '') ?? '') ?: null,
             'is_active' => $request->input('is_active', '1') ? 1 : 0,
         ]);
+        PageCacheMiddleware::purge(dirname(__DIR__, 3) . '/storage');
         return Response::redirect('/admin/sider', 302);
     }
 
@@ -91,6 +93,7 @@ class PagesController
             'content_html' => trim($request->input('content_html', '') ?? '') ?: null,
             'is_active' => $request->input('is_active', '1') ? 1 : 0,
         ]);
+        PageCacheMiddleware::purge(dirname(__DIR__, 3) . '/storage');
         return Response::redirect('/admin/sider', 302);
     }
 
@@ -103,6 +106,7 @@ class PagesController
         $page = $this->pageRepo->findByIdForAdmin($id);
         if ($page !== null) {
             $this->pageRepo->softDelete($id);
+            PageCacheMiddleware::purge(dirname(__DIR__, 3) . '/storage');
         }
         return Response::redirect('/admin/sider', 302);
     }

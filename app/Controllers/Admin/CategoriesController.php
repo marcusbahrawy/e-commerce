@@ -6,13 +6,18 @@ namespace App\Controllers\Admin;
 
 use App\Http\Request;
 use App\Http\Response;
+use App\Repositories\AuditLogRepository;
 use App\Repositories\CategoryRepository;
+use App\Http\Middleware\PageCacheMiddleware;
+use App\Support\Auth;
 use App\Support\Slug;
 
 class CategoriesController
 {
-    public function __construct(private CategoryRepository $categoryRepo)
-    {
+    public function __construct(
+        private CategoryRepository $categoryRepo,
+        private AuditLogRepository $auditLogRepo
+    ) {
     }
 
     public function index(Request $request, array $params): Response
@@ -46,7 +51,7 @@ class CategoriesController
         if ($this->categoryRepo->slugExists($slug, $parentId)) {
             $slug = $slug . '-' . time();
         }
-        $this->categoryRepo->create([
+        $id = $this->categoryRepo->create([
             'parent_id' => $parentId,
             'slug' => $slug,
             'name' => $name,
@@ -54,6 +59,8 @@ class CategoriesController
             'sort_order' => (int) ($request->input('sort_order', '0') ?? 0),
             'is_active' => $request->input('is_active', '1') ? 1 : 0,
         ]);
+        $this->auditLogRepo->log(Auth::userId(), 'category.create', 'category', (string) $id, $name, $request->ip());
+        PageCacheMiddleware::purge(dirname(__DIR__, 3) . '/storage');
         return Response::redirect('/admin/kategorier', 302);
     }
 
@@ -102,6 +109,8 @@ class CategoriesController
             'sort_order' => (int) ($request->input('sort_order', '0') ?? 0),
             'is_active' => $request->input('is_active', '1') ? 1 : 0,
         ]);
+        $this->auditLogRepo->log(Auth::userId(), 'category.update', 'category', (string) $id, $name, $request->ip());
+        PageCacheMiddleware::purge(dirname(__DIR__, 3) . '/storage');
         return Response::redirect('/admin/kategorier', 302);
     }
 
@@ -113,7 +122,9 @@ class CategoriesController
         $id = (int) ($params['id'] ?? 0);
         $category = $this->categoryRepo->findByIdForAdmin($id);
         if ($category !== null && !$this->categoryRepo->hasProducts($id)) {
+            $this->auditLogRepo->log(Auth::userId(), 'category.delete', 'category', (string) $id, $category['name'] ?? null, $request->ip());
             $this->categoryRepo->delete($id);
+            PageCacheMiddleware::purge(dirname(__DIR__, 3) . '/storage');
         }
         return Response::redirect('/admin/kategorier', 302);
     }

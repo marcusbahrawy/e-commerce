@@ -27,11 +27,18 @@ $title = $title ?? 'Admin';
             <nav>
                 <a href="<?= url('/admin') ?>">Dashboard</a>
                 <a href="<?= url('/admin/produkter') ?>">Produkter</a>
+                <a href="<?= url('/admin/merker') ?>">Merker</a>
                 <a href="<?= url('/admin/kategorier') ?>">Kategorier</a>
                 <a href="<?= url('/admin/sider') ?>">CMS-sider</a>
                 <a href="<?= url('/admin/menyer') ?>">Menyer</a>
                 <a href="<?= url('/admin/frakt') ?>">Fraktmetoder</a>
                 <a href="<?= url('/admin/ordrer') ?>">Ordrer</a>
+                <a href="<?= url('/admin/brukere') ?>">Brukere</a>
+                <a href="<?= url('/admin/innstillinger') ?>">Innstillinger</a>
+                <a href="<?= url('/admin/omdirigeringer') ?>">301-omdirigeringer</a>
+                <a href="<?= url('/admin/audit') ?>">Audit-logg</a>
+                <a href="<?= url('/admin/cache') ?>">Cache</a>
+                <a href="<?= url('/admin/passord') ?>">Bytt passord</a>
                 <form method="post" action="<?= url('/admin/logout') ?>" style="display:inline;"><?= csrf_field() ?><button type="submit" class="btn btn--ghost" style="color:#ccc;border:none;background:none;cursor:pointer;">Logg ut</button></form>
             </nav>
         </aside>
