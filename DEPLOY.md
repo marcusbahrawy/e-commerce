@@ -59,10 +59,10 @@ MAIL_FROM=noreply@motorleaks.illeris-web.no
 
 ## 4. Document root (web root)
 
-Appen må kjøres med **document root** satt til mappen **`public`** (der `index.php` ligger).
+Filer deployes til **`/public_html`** på serveren. Appen må kjøres med **document root** satt til **`public_html/public`** (der `index.php` ligger).
 
-- Hvis du kan velge document root for domenet (f.eks. i cPanel / Illeris panel): sett den til mappen **`public`** innenfor FTP-rot (f.eks. `public_html/public` eller `motorleaks/public`).
-- Hvis document root **må** være FTP-rot: da må du flytte innholdet i `public/` til roten og endre stier i `index.php` til app-mappen – da bør du heller få dokument root satt til `public`.
+- I hosting-panelet (cPanel / Illeris): sett document root for **motorleaks.illeris-web.no** til **`public_html/public`**.
+- Da blir URL-strukturen: `/public_html/app/`, `/public_html/public/index.php`, `/public_html/vendor/` osv., og webserveren serverer kun fra `public_html/public/`.
 
 ---
 
